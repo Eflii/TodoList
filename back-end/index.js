@@ -1,6 +1,7 @@
 const express = require("express")
 const uuid = require("uuid")
 const app = express()
+const cors = require("cors")
 
 const port = 8081
 
@@ -21,7 +22,7 @@ const todos = [{
 }]
 
 app.use(express.json());
-
+app.use(cors())
 app.get("/", (req,res ) => {
     res.json({msg: "Todo List Home Page"});
 })
