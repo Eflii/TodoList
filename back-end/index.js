@@ -17,8 +17,8 @@ const todos = [{
 },
 {
     id:3,
-    name: "Be better as a software engineer at the end of Erasmus ",
-    completed: "false"
+    name: "Be better as a software engineer",
+    completed: false
 }]
 
 app.use(express.json());
@@ -38,7 +38,7 @@ app.get("/todos", (req,res) => {
     res.json(todos)
 })
 
-//create all todo element
+//create a todo element
 app.post("/todos", (req,res) => {
     console.log(req.body);
     todos.push({id: uuid.v4(), ...req.body})
