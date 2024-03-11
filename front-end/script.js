@@ -12,7 +12,10 @@ let todoArray = []
 const URL = "http://localhost:8081/todos"
 
 
-//get all todos at every reload 
+/*
+* Get all todos elements
+*
+*/
 async function get_todos() {
     try{
         const resp = await fetch(URL)
@@ -35,7 +38,7 @@ get_todos().then((todoArr) => {
 
 
 /*
-* Display all todos elements
+* Display all todos elements by creating them
 * @param {array} todoArr - all todos elements
 *
 */
@@ -92,7 +95,7 @@ function display_Todos(todoArr) {
 
 
 /*
-* Add a todo element
+* Call POST request to add a todo element
 *
 */
 async function post_todos(){
@@ -119,14 +122,10 @@ async function post_todos(){
 // get the result of the post request on + button click
 addTodo.addEventListener("click", () => {
   inputTodo.value != "" ? post_todos() : null 
-
-}
-
-
-)
+})
 
 /*
-* Delete a todo element
+* Call the DELETE request to delete a todo element
 * @param todoElem - the todo element that will be delete
 */
 async function del_Todo(todoElem){
@@ -144,6 +143,11 @@ async function del_Todo(todoElem){
   }
 }
 
+/*
+* Open modal panel and add event listener to the save button 
+* @param todoElem - the todo element selected to be modify 
+*
+*/
 function open_modal(TodoElem){
   modal.style.display = "flex";
   console.log(TodoElem)
@@ -155,6 +159,11 @@ function open_modal(TodoElem){
 )
 }
 
+/*
+* Call the PUT request to modify a specific todo element  
+* @param todoElem - the todo element selected to be modify 
+*
+*/
 async function edit_Todos(TodoElem) {
   try {
     editTodoName.value == "" ? editTodoName.value = TodoElem.name : null
