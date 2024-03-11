@@ -4,8 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello world !</h1>
+    <h1>Helllo world !</h1>
+    <form class="input-container">
+        <input id="input-todo" type="text" placeholder="Enter Todo ">
+        <button id="add-todo" type="submit">+</button>
+    </form>
+<div class="todo-container">
+    <!-- example of todo element's structure -->
+    <!-- <div class="todo">
+        <div class="todo-info">
+            <input type="checkbox" class="todo-completed" checked>
+            <p class="todo-name"> finir l'app de todo-list</p>
+        </div>
+        <div class="todo-btn">
+            <button class="todo-edit">Edit</button>
+            <button class="todo-delete">Delete</button>
+        </div>
+    </div> -->
+</div>
+    <div class="modal-background">
+        <div class="modal">
+            <div class="modal-top">
+                <h1>EDIT Todo</h1>
+                 <span class="close-modal" id="close-modal">
+                    &#x2715;
+                 </span>
+            </div>
+            <div class="modal-bottom">
+                <input type="text" placeholder="Enter Code" id="edit-todo-name">
+                <div class="edit-todo-completed-wrapper">
+                    <input type="checkbox" id="edit-todo-completed"> Completed
+                </div>
+                <button id="save-todo">Save</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
