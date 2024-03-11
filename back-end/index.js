@@ -2,8 +2,9 @@ const express = require("express")
 const uuid = require("uuid")
 const app = express()
 const cors = require("cors")
+const path = require('path'); 
 
-const port = 8081
+const port = 8088
 
 const todos = [{
     id: 1,
@@ -23,8 +24,15 @@ const todos = [{
 
 app.use(express.json());
 app.use(cors())
+
+app.use(express.static(path.join(__dirname, '../front-end')));
+
+goodPath = path.join(__dirname, "../front-end/views/index.html");
+console.log(goodPath)
 app.get("/", (req,res ) => {
-    res.json({msg: "Todo List Home Page"});
+    // res.json({msg: "Todo List Home Page"});
+    res.sendFile(goodPath);
+       
 })
 
 //get 1 particular todo element 
