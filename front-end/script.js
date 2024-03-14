@@ -6,10 +6,10 @@ const closeModal = document.getElementById("close-modal")
 const saveModal = document.getElementById("save-todo")
 const editTodoName = document.getElementById("edit-todo-name")
 const editTodoCompleted = document.getElementById("edit-todo-completed")
-
+const darkModeBtn = document.querySelector(".DarkMode-btn")
 let todoArray = []
 
-const URL = "http://localhost:8081/todos"
+const URL = "http://localhost:8088/todos"
 
 
 /*
@@ -194,3 +194,17 @@ closeModal.addEventListener("click", () =>
  {
   modal.style.display = "none";
  })
+
+ 
+// DarkMode button part 
+darkModeBtn.addEventListener("click",() => {
+  if(darkModeBtn.style.backgroundColor == "whitesmoke"){
+    darkModeBtn.style.backgroundColor = "slategray"
+    darkModeBtn.value = "Dark Mode"
+    document.getElementsByTagName('body')[0].style.backgroundColor = "whitesmoke";
+  }else {
+    darkModeBtn.style.backgroundColor = "whitesmoke"
+    darkModeBtn.value = "Light Mode"
+    document.getElementsByTagName('body')[0].style.backgroundColor = "slategray";
+  }
+})

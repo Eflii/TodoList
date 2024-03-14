@@ -6,8 +6,18 @@ body {
   background-color: whitesmoke;
 }
 
+.DarkMode-btn {
+  position: absolute;
+  display: flex;
+  right: 30px;
+  background-color: slategray;
+  color: black;
+  border-radius: 10px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
 .input-container {
-  border: 2px solid black;
   width: 500px;
   display: flex;
   flex-direction: column;
@@ -90,7 +100,7 @@ body {
 .modal {
   background-color: white;
   width: 300px;
-  margin: 25% auto;
+  margin: auto;
   border-radius: 25px;
   padding: 10px 20px 30px 20px;
 }
