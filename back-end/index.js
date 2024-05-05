@@ -1,5 +1,4 @@
 const express = require("express")
-const uuid = require("uuid")
 const app = express()
 const cors = require("cors")
 const path = require('path'); 
@@ -25,56 +24,53 @@ const todosRouter = require("./routes/Todos");
 const authRouter = require("./routes/auth");
 
 app.use(express.json());
-app.use(cors())
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+// 3. adding the routes
+app.use("/", todosRouter);
+app.use("/auth", authRouter);
+  
+// //TODO yellow flag vulnerability
+// app.disable('x-powered-by');
 
+// //TODO orange flag vulnerability
+// const corsOptions = {
+//     origin: 'https://example.com'
+//   };
+
+// app.use(cors(corsOptions)) 
 app.use(express.static(path.join(__dirname, '../front-end')));
+//TODO orange flag vulnerability
 
-goodPath = path.join(__dirname, "../front-end/views/index.html");
-console.log(goodPath)
-app.get("/", (req,res ) => {
-    // res.json({msg: "Todo List Home Page"});
-    res.sendFile(goodPath);
-       
-})
+// app.use((req, res, next) => {
+//     res.setHeader('X-Frame-Options', 'DENY'); // Empêche l'affichage dans un cadre sur un autre site
+//     res.setHeader('X-Content-Type-Options', 'nosniff');
+//     // if (req.url.endsWith('.css')) {
+//     //     res.setHeader('X-Content-Type-Options', 'nosniff');
+//     // }
+//     // if (req.url.endsWith('.js')) {
+//     //     res.setHeader('X-Content-Type-Options', 'nosniff');
+//     // }
+//     next();
+// });
 
-//get 1 particular todo element 
-app.get("/todos/:id", (req,res) => {
-    let todo = todos.filter((todo) => todo.id == req.params.id)
-    res.json({msg: "get the todo : ", data: todo})
-})
+function connectDB(url) {
+    return mongoose.connect(url);
+  }
 
-//get all todos elements 
-app.get("/todos", (req,res) => {
-    res.json(todos)
-})
-
-//create a todo element
-app.post("/todos", (req,res) => {
-    console.log(req.body);
-    todos.push({id: uuid.v4(), ...req.body})
-    res.json({msg: "create todo element", data: todos})
-})
-
-//delete a todo element
-app.delete("/todos/:id", (req,res) => {
-    let index = todos.findIndex((todo) => todo.id == req.params.id)
-    todos.splice(index,1)
-    res.json({msg:"delete todo element ", data: todos})
-})
-
-//modify 1 particular todo element  
-app.put("/todos/:id", (req,res) => {
-    let todo = todos.find((todo) => todo.id == req.params.id)
-
-    if(todo) {
-        todo.name = req.body.name;
-        todo.completed = req.body.completed
-        res.json({msg: "todo successfully modified ! 🥳", data: todos})
-    }else{
-        res.json({msg: "todo not found"})
+async function start() {
+    try {
+      await connectDB(connectionString);
+      app.listen(PORT, () => {
+        console.log(`App running on PORT ${PORT}`);
+      });
+    } catch (err) {
+      console.log(err);
     }
-})
+  }
 
-app.listen(port, () => {
-    console.log(`App is running on port ${port}`)
-})
+  start()
+
+// app.listen(port, () => {
+//     console.log(`App is running on port ${port}`)
+// })

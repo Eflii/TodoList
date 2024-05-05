@@ -1,3 +1,4 @@
+
 const todoContainer = document.querySelector(".todo-container")
 const inputTodo = document.getElementById("input-todo")
 const addTodo = document.getElementById("add-todo")
@@ -93,7 +94,6 @@ function display_Todos(todoArr) {
   });
 }
 
-
 /*
 * Call POST request to add a todo element
 *
@@ -115,7 +115,6 @@ async function post_todos(){
     return data 
   } catch (err) {
     return err
-    
   }
 }
 
@@ -137,9 +136,8 @@ async function del_Todo(todoElem){
     const data = await resp.json()
     window.location.reload();
     return data 
-
   } catch (err) {
-    return err
+      window.location.href = 'http://localhost:8088/auth/loginPage'
   }
 }
 
@@ -150,14 +148,18 @@ async function del_Todo(todoElem){
 */
 function open_modal(TodoElem){
   modal.style.display = "flex";
-  console.log(TodoElem)
   saveModal.addEventListener("click", () => {
-    edit_Todos(TodoElem)
-    modal.style.display = "none";
-    window.location.reload();   
- }
+ edit_Todos(TodoElem).then(data =>{
+  console.log(data)
+  if (data == "AuthProblem"){
+    window.location.href = 'http://localhost:8088/auth/loginPage'
+ }else {
+  modal.style.display = "none";
+  window.location.reload(); 
+ }}
 )
-}
+
+ })}
 
 /*
 * Call the PUT request to modify a specific todo element  
@@ -167,7 +169,6 @@ function open_modal(TodoElem){
 async function edit_Todos(TodoElem) {
   try {
     editTodoName.value == "" ? editTodoName.value = TodoElem.name : null
-
     let options = {
       method: "PUT",
       headers: {
@@ -178,14 +179,21 @@ async function edit_Todos(TodoElem) {
         completed: editTodoCompleted.checked,
       }),
     }
-    const resp = fetch(URL + `/${TodoElem.id}`, options)
-    const data = resp.json()
     
-    return data
+    const resp = await fetch(URL + `/${TodoElem.id}`, options);
+    let result;
+
+    if (resp.url === "http://localhost:8088/auth/loginPage") {
+      console.log("AuthProblem");
+      result = "AuthProblem";
+    } else {
+      result = await resp.json();
+    }
+    return result
+ 
   } catch (err) {
-    return err
+    return err    
   }
-  
 }
 
 
