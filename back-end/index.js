@@ -3,24 +3,26 @@ const uuid = require("uuid")
 const app = express()
 const cors = require("cors")
 const path = require('path'); 
+const mongoose = require("mongoose")
+const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv")
+dotenv.config()
 
-const port = 8088
+const PORT = 8088
 
-const todos = [{
-    id: 1,
-    name: "Create a todo App ", 
-    completed: true,
-},
-{
-    id: 2,
-    name: "Eat something in a few hours",
-    completed: false,
-},
-{
-    id:3,
-    name: "Be better as a software engineer",
-    completed: false
-}]
+//connection to MongoDB 
+  
+const connectionString =
+  "mongodb+srv://admin:admin@todolistapp.tsfjlsw.mongodb.net/?retryWrites=true&w=majority&appName=TodoListApp";
+
+  mongoose
+  .connect(connectionString)
+  .then(() => console.log("Connected to DB"))
+  .catch((err) => console.log("Got an error", err));
+
+// importing the routes
+const todosRouter = require("./routes/Todos");
+const authRouter = require("./routes/auth");
 
 app.use(express.json());
 app.use(cors())
