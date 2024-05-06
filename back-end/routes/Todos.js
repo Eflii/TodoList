@@ -49,7 +49,7 @@ router.delete("/todos/:id", protected, async (req, res) => {
   });
 
 //modify 1 particular todo element  
-router.put("/todos/:id",  async (req, res) => {
+router.put("/todos/:id", protected,  async (req, res) => {
     const todo = await Todo.findOneAndUpdate({id: req.params.id}, req.body);
     res.json(todo);
   });

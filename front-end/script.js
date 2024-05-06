@@ -30,7 +30,6 @@ async function get_todos() {
 
 get_todos().then((todoArr) => {
   todoArray = todoArr
-  console.log(todoArray)
   display_Todos(todoArray)
 }).catch((err) => {
   console.log(err)
