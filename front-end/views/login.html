@@ -1,26 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <!-- TODO orange flag vulnerability --> 
   <meta   http-equiv="Content-Security-Policy" name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo List</title>
+  <title>Login</title>
   <link rel="stylesheet" href="../login_style.css">
 </head>
+<body>
 
-<form action="action_page.php" method="post">
+<form id="loginForm" class="container">
+  <label for="uname"><b>Username</b></label>
+  <input type="text" placeholder="Enter Username" name="uname" id="username" required>
 
-  <div class="container">
-    <label for="uname"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
+  <label for="psw"><b>Password</b></label>
+  <input type="password" placeholder="Enter Password" name="psw" id="password" required>
 
-    <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
-
-    <button type="submit">Login</button>
-  </div>
-
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
-    
-    <span class="psw">Forgot <a href="#">password?</a></span>
-  </div>
+  <button type="submit">Login</button>
 </form>
+
+<div class="container" style="background-color:#f1f1f1">
+  <button type="button" class="cancelbtn">Cancel</button>
+  <span class="psw">Forgot <a href="#">password?</a></span>
+</div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // Send a POST request to /auth/signin with username and password
+    try {
+      const response = await fetch("/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      const data = await response.json();
+      const accessToken = data.accesstoken
+      // Stockage du token dans un cookie avec une durée de validité
+      document.cookie = `accessToken=${accessToken}; path=/;`;
+     
+      alert(data.message); // Show success message
+      // Redirect to dashboard or another page
+      window.location.href = 'http://localhost:8088/  '
+
+    } catch (error) {
+      alert("Error: " + error.message); // Show error message
+    }
+  });
+</script>
+
+</body>
+</html>
