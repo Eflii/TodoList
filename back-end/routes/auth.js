@@ -10,7 +10,7 @@ const {
     sendAccessToken,
     sendRefreshToken,
   } = require("../utils/token");
-
+  const  {verify}  = require("jsonwebtoken");
 
 
 //loading page request 
@@ -103,6 +103,7 @@ router.post("/signin", async (req, res) => {
       // 5. send the response
       sendRefreshToken(res, refreshToken);
       sendAccessToken(req, res, accessToken);
+        
     } catch (error) {
       res.status(500).json({
         type: "error",
@@ -123,47 +124,50 @@ router.post("/logout", (_req, res) => {
   });
     
 
-const { verify } = require("jsonwebtoken");
+
 // Refresh Token request
 router.post("/refresh_token", async (req, res) => {
   try {
     
  
-    // const refreshtoken  = req.cookies;
-    
+      const refreshtoken  = req.cookies.refreshtoken;
     // if we don't have a refresh token, return error
-    if (!req.cookies)
+      if (!refreshtoken)
       return res.status(500).json({
         message: "No refresh token! 🤔",
         type: "error",
       });
     // if we have a refresh token, you have to verify it
-    let id;
+      let decodedToken;
     try {
-      console.log("vérification token ")
-      id = verify(req.cookies, process.env.REFRESH_TOKEN_SECRET).id;
-      console.log("vérification réussi")
+        decodedToken =  verify(refreshtoken, process.env.REFRESH_TOKEN_SECRET);
+
 
     } catch (error) {
+
       return res.status(500).json({
         message: "Invalid refresh token! 🤔",
         type: "error",
       });
     }
+
+      // Extract the user ID from the decoded token
+      const userId = decodedToken.id;
     // if the refresh token is invalid, return error
-    if (!id)
+      if (!userId)
       return res.status(500).json({
         message: "Invalid refresh token! 🤔",
         type: "error",
       });
     // if the refresh token is valid, check if the user exists
-    const user = await User.findById(id);
+      const user = await User.findById(userId);
     // if the user doesn't exist, return error
     if (!user)
       return res.status(500).json({
         message: "User doesn't exist! 😢",
         type: "error",
       });
+
     // if the user exists, check if the refresh token is correct. return error if it is incorrect.
     if (user.refreshtoken !== refreshtoken)
       return res.status(500).json({
