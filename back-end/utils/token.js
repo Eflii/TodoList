@@ -2,7 +2,7 @@ const { sign } = require("jsonwebtoken");
 // signing the access token
 const createAccessToken = (id) => {
   return sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: 1 * 60,
+    expiresIn: '60m',
   });
 };
 
