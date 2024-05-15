@@ -44,7 +44,6 @@ get_todos().then((todoArr) => {
 */
 function display_Todos(todoArr) {
   todoArr.forEach((todoElem) => {
-    console.log(todoElem);
 
     // Parent
     let todo = document.createElement("div");
@@ -70,7 +69,6 @@ function display_Todos(todoArr) {
     todoEdit.innerHTML = "Edit";
     todoEdit.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("Open modal");
       open_modal(todoElem);
     });
     let todoDel = document.createElement("button");
@@ -149,7 +147,6 @@ function open_modal(TodoElem){
   modal.style.display = "flex";
   saveModal.addEventListener("click", () => {
  edit_Todos(TodoElem).then(data =>{
-  console.log(data)
   if (data == "AuthProblem"){
     window.location.href = 'http://localhost:8088/auth/loginPage'
  }else {
@@ -183,7 +180,6 @@ async function edit_Todos(TodoElem) {
     let result;
 
     if (resp.url === "http://localhost:8088/auth/loginPage") {
-      console.log("AuthProblem");
       result = "AuthProblem";
     } else {
       result = await resp.json();
