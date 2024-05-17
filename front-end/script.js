@@ -117,7 +117,10 @@ async function post_todos(){
 
 // get the result of the post request on + button click
 addTodo.addEventListener("click", () => {
-  inputTodo.value != "" ? post_todos() : null 
+
+  if (inputTodo.value != "") {
+    inputTodo.value = post_todos();
+  }
 })
 
 /*
@@ -164,7 +167,9 @@ function open_modal(TodoElem){
 */
 async function edit_Todos(TodoElem) {
   try {
-    editTodoName.value == "" ? editTodoName.value = TodoElem.name : null
+    if (editTodoName.value == ""){
+      editTodoName.value = TodoElem.name
+    }
     let options = {
       method: "PUT",
       headers: {

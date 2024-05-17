@@ -1,7 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const path = require('path'); 
-const { protected } = require("../utils/protected");
+const { secured } = require("../utils/protected");
 const app = express()
 const router = express.Router();
 const uuid = require("uuid")
@@ -13,10 +13,9 @@ const TodoSchema = new mongoose.Schema({
   });
 const Todo = mongoose.model("Todo", TodoSchema);
 
-goodPath = path.join(__dirname, "../../front-end/views/index.html");
+const goodPath = path.join(__dirname, "../../front-end/views/index.html");
 
 router.get("/", (req,res ) => {
-    // res.json({msg: "Todo List Home Page"});
     res.sendFile(goodPath);
        
 })
@@ -42,14 +41,14 @@ router.post("/todos", async (req, res) => {
 });
 
 //delete a todo element
-router.delete("/todos/:id", protected, async (req, res) => {
+router.delete("/todos/:id", secured, async (req, res) => {
     
     const todo = await Todo.findOneAndDelete({id: req.params.id});
     res.json(todo);
   });
 
 //modify 1 particular todo element  
-router.put("/todos/:id", protected,  async (req, res) => {
+router.put("/todos/:id", secured,  async (req, res) => {
     const todo = await Todo.findOneAndUpdate({id: req.params.id}, req.body);
     res.json(todo);
   });
