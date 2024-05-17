@@ -5,7 +5,7 @@ const loginURL = "http://localhost:8088/auth/loginPage"
 
 
 
-const protected = async (req, res, next) => {
+const secured = async (req, res, next) => {
   // get the token from the header
 
   const authorization = req.cookies.accessToken;
@@ -43,4 +43,4 @@ const protected = async (req, res, next) => {
   // call the next middleware
   next();
 };
-module.exports = { protected };
+module.exports = { secured };

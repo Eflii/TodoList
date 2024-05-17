@@ -15,17 +15,17 @@ const {
 
 //loading page request 
 
-authPath = path.join(__dirname, "../../front-end/views/auth.html")
+  const authPath = path.join(__dirname, "../../front-end/views/auth.html")
 router.get("/authPage", (req, res) => {
     res.sendFile(authPath)
 })
 
-loginPath = path.join(__dirname, "../../front-end/views/login.html");
+  const loginPath = path.join(__dirname, "../../front-end/views/login.html");
 router.get("/loginPage",  (req,res) => {
     res.sendFile(loginPath)
 })
 
-signupPath = path.join(__dirname, "../../front-end/views/signup.html");
+  const signupPath = path.join(__dirname, "../../front-end/views/signup.html");
 router.get("/signupPage",  (req,res) => {
     res.sendFile(signupPath)
 })
