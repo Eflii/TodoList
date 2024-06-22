@@ -1,3 +1,4 @@
+// const { todo } = require("node:test")
 
 const todoContainer = document.querySelector(".todo-container")
 const inputTodo = document.getElementById("input-todo")
@@ -10,7 +11,7 @@ const editTodoCompleted = document.getElementById("edit-todo-completed")
 const darkModeBtn = document.querySelector(".DarkMode-btn")
 let todoArray = []
 
-const URL = "http://localhost:8088/todos"
+const backendURL = "http://localhost:8088/todos"
 
 
 /*
@@ -18,18 +19,19 @@ const URL = "http://localhost:8088/todos"
 *
 */
 async function get_todos() {
-    try{
-        const resp = await fetch(URL)
-        const data = await resp.json()
-        return data
-    } catch (error){
-        return error
+    try {
+        const resp = await fetch(backendURL);       
+        const data = await resp.json();
+        console.error("Fetched data is not an array:", data);
+        return data;
+    } catch (error) {
+        console.error("Error fetching todos:", error);
+        return []; // Return an empty array in case of error
     }
-    
 }
 
 get_todos().then((todoArr) => {
-  todoArray = todoArr
+  todoArray =todoArr
   display_Todos(todoArray)
 }).catch((err) => {
   console.log(err)
@@ -43,6 +45,7 @@ get_todos().then((todoArr) => {
 *
 */
 function display_Todos(todoArr) {
+  console.log(todoArr)
   todoArr.forEach((todoElem) => {
 
     // Parent
@@ -103,11 +106,14 @@ async function post_todos(){
         "content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: inputTodo.value,
-        completed: false,
+        todoElement: JSON.stringify({
+          id: "",
+          name: inputTodo.value,
+          completed: false,
+        }),
       }),
     }
-    const resp = await fetch(URL,options)
+    const resp = await fetch(backendURL,options)
     const data = await resp.json()
     return data 
   } catch (err) {
@@ -120,6 +126,8 @@ addTodo.addEventListener("click", () => {
 
   if (inputTodo.value != "") {
     inputTodo.value = post_todos();
+  window.location.reload(); 
+
   }
 })
 
@@ -129,14 +137,18 @@ addTodo.addEventListener("click", () => {
 */
 async function del_Todo(todoElem){
   try {
+    console.log("delete", todoElem.id)
     let options = {
       method: "DELETE"
     }
-    const resp = await fetch(URL + `/${todoElem.id}`,options)
+    const resp = await fetch(backendURL + `/${todoElem.id}`,options)
+
     const data = await resp.json()
+
     window.location.reload();
     return data 
   } catch (err) {
+    console.log(err)
       window.location.href = 'http://localhost:8088/auth/loginPage'
   }
 }
@@ -151,7 +163,7 @@ function open_modal(TodoElem){
   saveModal.addEventListener("click", () => {
  edit_Todos(TodoElem).then(data =>{
   if (data == "AuthProblem"){
-    window.location.href = 'http://localhost:8088/auth/loginPage'
+    window.location.href = 'http://localhost:8088'
  }else {
   modal.style.display = "none";
   window.location.reload(); 
@@ -181,7 +193,7 @@ async function edit_Todos(TodoElem) {
       }),
     }
     
-    const resp = await fetch(URL + `/${TodoElem.id}`, options);
+    const resp = await fetch(backendURL + `/${TodoElem.id}`, options);
     let result;
 
     if (resp.url === "http://localhost:8088/auth/loginPage") {
