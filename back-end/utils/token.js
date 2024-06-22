@@ -1,14 +1,14 @@
 const { sign } = require("jsonwebtoken");
 // signing the access token
-const createAccessToken = (id) => {
-  return sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
+const createAccessToken = (username) => {
+  return sign({ username }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '60m',
   });
 };
 
 // signing the refresh token
-const createRefreshToken = (id) => {
-  return sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
+const createRefreshToken = (username) => {
+  return sign({ username }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "90d",
   });
 };

@@ -1,6 +1,6 @@
 # Todo List Project
 
- FullStack TodoList to use as a basis for my individual study project
+ Application for the Secure coding projet in Algebra university
 
 ## Installation
 

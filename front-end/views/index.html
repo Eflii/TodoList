@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <!-- TODO orange flag vulnerability --> 
+    <meta charset="UTF-8"> --> 
     <meta   http-equiv="Content-Security-Policy" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
     <link rel="stylesheet" href="../style.css">
@@ -11,10 +10,9 @@
     <h1>Hello world !</h1>
     <input type="button" value="Dark Mode" class="DarkMode-btn"></input>
     <form class="input-container">
-        <!-- TODO orange flag vulnerability -->
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <input id="input-todo" type="text" placeholder="Enter Todo ">
-        <button id="add-todo" type="submit">+</button>
+        <button id="add-todo" type="button">+</button>
     </form>
 <div class="todo-container">
     <!-- example of todo element's structure -->

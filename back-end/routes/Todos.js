@@ -1,56 +1,58 @@
-const express = require("express")
-const mongoose = require("mongoose")
-const path = require('path'); 
-const { secured } = require("../utils/protected");
-const app = express()
-const router = express.Router();
-const uuid = require("uuid")
+const express = require("express");
+const path = require("path");
+const { secured } = require("../utils/dbprotected");
+const uuid = require("uuid");
 
-const TodoSchema = new mongoose.Schema({
-    id: String,
-    name: String,
-    completed: Boolean,
-  });
-const Todo = mongoose.model("Todo", TodoSchema);
+const createTodoRouter = (TodoDatabase) => {
+  const router = express.Router();
+  const dbPath = path.join(__dirname, "../database.db");
+  const Todo = new TodoDatabase(dbPath);
+  const goodPath = path.join(__dirname, "../../front-end/views/index.html");
 
-const goodPath = path.join(__dirname, "../../front-end/views/index.html");
-
-router.get("/", (req,res ) => {
+  router.get("/", (req, res) => {
     res.sendFile(goodPath);
-       
-})
+  });
 
-
-//get 1 particular todo element 
-router.get("/todos/:id", async (req, res) => {
-    const todo = await Todo.findOne({id: req.params.id});
+  router.get("/todos/:id", async (req, res) => {
+    const todoId = req.params.id;
+    const todo = await Todo.getTodoById(todoId);
     res.json(todo);
   });
 
-//get all todos elements 
-router.get("/todos",  async (req, res) => {
-    const todos = await Todo.find({});
+  router.get("/todos", async (req, res) => {
+    const todos = await Todo.getAllTodos();
     res.json(todos);
   });
-  
 
-//create a todo element
-router.post("/todos", async (req, res) => {
-  const todo = await Todo.create({id: uuid.v4(), ...req.body});
-  res.json(todo);
-});
+  router.post("/todos", async (req, res) => {
+    try {
 
-//delete a todo element
-router.delete("/todos/:id", secured, async (req, res) => {
-    
-    const todo = await Todo.findOneAndDelete({id: req.params.id});
+      const todoJson = req.body.todoElement;
+      const todoElem = TodoDatabase.deserialize(todoJson);
+      todoElem.setTodoId(uuid.v4());
+      const todo = await Todo.addTodo(todoElem);
+      res.json(todo);
+    } catch (err) {
+      console.error("Error creating todo:", err);
+      res.status(400).json({ error: "Invalid todo data" });
+    }
+  });
+
+  router.delete("/todos/:id", secured, async (req, res) => {
+    const todo = await Todo.deleteTodoById(req.params.id);
     res.json(todo);
   });
 
-//modify 1 particular todo element  
-router.put("/todos/:id", secured,  async (req, res) => {
-    const todo = await Todo.findOneAndUpdate({id: req.params.id}, req.body);
+  router.put("/todos/:id", secured, async (req, res) => {
+    const todo = await Todo.updateTodo(
+      req.params.id,
+      req.body.name,
+      req.body.completed
+    );
     res.json(todo);
   });
 
-module.exports = router;
+  return router;
+};
+
+module.exports = createTodoRouter;
