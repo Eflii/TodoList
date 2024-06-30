@@ -5,6 +5,7 @@ class PictureDatabase {
     constructor(dbFilePath) {
         this.db = new sqlite3.Database(dbFilePath);
         this.createTable();
+        this.prepareStatements();
     }
 
     createTable() {
@@ -21,101 +22,93 @@ class PictureDatabase {
         `);
     }
 
+    prepareStatements() {
+        this.statements = {
+            addPicture: this.db.prepare('INSERT INTO pictures (url, caption, user, description, hashtags) VALUES (?, ?, ?, ?, ?)'),
+            getPictureById: this.db.prepare('SELECT * FROM pictures WHERE id = ?'),
+            getAllPictures: this.db.prepare('SELECT * FROM pictures ORDER BY uploadDate DESC'),
+            getPicturesByHashtag: this.db.prepare('SELECT * FROM pictures WHERE hashtags LIKE ?'),
+            deletePictureById: this.db.prepare('DELETE FROM pictures WHERE id = ?'),
+            updatePicture: this.db.prepare('UPDATE pictures SET description = ?, hashtags = ? WHERE id = ?')
+        };
+    }
+
     async addPicture(picture) {
         const { url, caption, user, description, hashtags } = picture;
         return new Promise((resolve, reject) => {
-            this.db.run(
-                'INSERT INTO pictures (url, caption, user, description, hashtags) VALUES (?, ?, ?, ?, ?)',
-                [url, caption, user, description, hashtags],
-                function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(this.lastID);
-                    }
+            this.statements.addPicture.run([url, caption, user, description, hashtags], function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
                 }
-            );
+            });
         });
     }
 
     async getPictureById(id) {
         return new Promise((resolve, reject) => {
-            this.db.get(
-                'SELECT * FROM pictures WHERE id = ?',
-                [id],
-                (err, row) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(row);
-                    }
+            this.statements.getPictureById.get([id], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
                 }
-            );
+            });
         });
     }
 
     async getAllPictures() {
         return new Promise((resolve, reject) => {
-            this.db.all(
-                'SELECT * FROM pictures ORDER BY uploadDate DESC',
-                (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(rows);
-                    }
+            this.statements.getAllPictures.all((err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
                 }
-            );
+            });
         });
     }
 
     async getPicturesByHashtag(hashtag) {
         const regex = `%${hashtag}%`;
         return new Promise((resolve, reject) => {
-            this.db.all(
-                'SELECT * FROM pictures WHERE hashtags LIKE ?',
-                [regex],
-                (err, rows) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(rows);
-                    }
+            this.statements.getPicturesByHashtag.all([regex], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
                 }
-            );
+            });
         });
     }
 
     async deletePictureById(id) {
         return new Promise((resolve, reject) => {
-            this.db.run(
-                'DELETE FROM pictures WHERE id = ?',
-                [id],
-                function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(this.changes);
-                    }
+            this.statements.deletePictureById.run([id], function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.changes);
                 }
-            );
+            });
         });
     }
 
     async updatePicture(id, description, hashtags) {
         return new Promise((resolve, reject) => {
-            this.db.run(
-                'UPDATE pictures SET description = ?, hashtags = ? WHERE id = ?',
-                [description, hashtags, id],
-                function (err) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(this.changes);
-                    }
+            this.statements.updatePicture.run([description, hashtags, id], function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.changes);
                 }
-            );
+            });
         });
+    }
+
+    close() {
+        Object.values(this.statements).forEach(statement => statement.finalize());
     }
 }
 

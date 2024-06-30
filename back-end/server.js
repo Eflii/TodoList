@@ -3,6 +3,8 @@ const cors = require("cors");
 const path = require('path');
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const { register } = require('./utils/metrics');
+
 dotenv.config();
 
 // Importing the routes
@@ -40,6 +42,12 @@ const todoRouter = createTodoRouter(TodoDatabase);
 app.use("/", todoRouter);
 app.use("/auth", authRouter);
 app.use("/", pictureRouter);
+
+// Expose metrics at /metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 // Static files
 app.use(express.static(path.join(__dirname, '../front-end')));
 
